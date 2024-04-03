@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 class="subtitle">
+      {{label}}
+    </h1>
+    <div class="is-flex is-align-content-center">
+      <p class="is-align-self-center mr-2">Current table: </p>
+      <div class="select">
+        <select name="" id="">
+          {% for tbl in tables %}
+            <option value="{{tbl}}" {% if table == tbl %}selected{% endif %} data-permalink="{{url_for('read_database', owner=owner, db_slug=db, tbl=tbl)}}">{{tbl}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button class="button is-ghost" id="add-table">add new table</button>
+    </div>
+    <div class="columns">
+      <div class="column is-half">
+        <form action="/upload/table" class="mt-4 is-hidden" enctype="multipart/form-data" method="post">
+          <input type="hidden" name="owner" value="{{owner}}">
+          <input type="hidden" name="db" value="{{db}}">
+          <div class="field">
+            <label class="label" for="name">Table name</label>
+            <div class="control">
+              <input class="input" id="name" name="name" type="text" placeholder="Salaries in data science" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="file">File</label>
+            <div class="file">
+              <label class="file-label">
+                <input class="file-input" type="file" name="file" id="file" accept=".csv">
+                <span class="file-cta">
+                  <span class="file-label">
+                    Choose a file…
+                  </span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <input class="button is-primary" type="submit">
+        </form>
+      </div>
+    </div>
+    <div class="table-container mt-4">
+      <table class="table">
+        <thead>
+          <tr>
+            {% for col in cols %}
+              <th>{{col}}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for rec in records %}
+            <tr>
+              {% for i in range(rec | length) %}
+                <td>{{rec[i]}}</td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+          <tr><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const btn = document.getElementById('add-table')
+  const form = document.querySelector('form')
+  const select = document.querySelector('select')
+  let edit = false
+
+  btn.addEventListener('click', function () {
+    if (!edit) {
+      edit = true
+      btn.textContent = 'cancel'
+      form.classList.remove('is-hidden')
+      return
+    }
+    edit = false
+    btn.textContent = 'add new table'
+    form.reset()
+    form.classList.add('is-hidden')
+  })
+
+  select.addEventListener('change', function (e) {
+    const [option] = e.target.selectedOptions
+    const { permalink } = option.dataset
+    window.location.assign(permalink)
+  })
+</script>
+{% endblock %}

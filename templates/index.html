@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-half">
+        <h1 class="subtitle">
+          Create a new database
+        </h1>
+        <form action="/upload/database" class="mt-4" enctype="multipart/form-data" method="post">
+          <div class="field">
+            <label for="username" class="label">Username</label>
+            <div class="control">
+              <div class="select">
+                <select name="username" id="username">
+                  <option value="ddazal">ddazal</option>
+                  <option value="jpmarindiaz">jpmarindiaz</option>
+                  <option value="lcalderon">lcalderon</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="name">Database name</label>
+            <div class="control">
+              <input class="input" id="name" name="name" type="text" placeholder="Salaries in data science" required>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label" for="file">Dataset file</label>
+            <div class="file">
+              <label class="file-label">
+                <input class="file-input" type="file" name="file" id="file" accept=".csv">
+                <span class="file-cta">
+                  <span class="file-label">
+                    Choose a file…
+                  </span>
+                </span>
+              </label>
+            </div>
+          </div>
+          <input class="button is-primary" type="submit">
+        </form>
+      </div>
+      <div class="column is-half">
+        <h1 class="subtitle">
+          Your databases
+        </h1>
+        <div class="content">
+          <ul>
+            {% for db in databases %}
+              <li>{{ db[0] }} - <a href="/databases/{{db[2]}}/{{db[1]}}">view</a> | <a href="/databases/delete/{{db[1]}}">delete</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
